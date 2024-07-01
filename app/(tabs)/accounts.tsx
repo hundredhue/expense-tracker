@@ -7,21 +7,24 @@ import {
   TouchableOpacity,
   View,
   FlatList,
+  Pressable,
 } from "react-native";
 import Colors from "@/constants/Colors";
 import React, { useState } from "react";
 import tw from "twrnc";
 import CashFlowItem from "@/components/CashFlowItem/CashFlowItem";
+import { Link } from "expo-router";
+import FloatingTransactionButton from "@/components/buttons/FloatingTransactionButton";
 
 type Props = {};
 
 const Accounts = (props: Props) => {
   const insets = useSafeAreaInsets();
+
   const [selected_option, setSelectedOption] = useState({
     name: "Accounts",
     location: "accounts",
   });
-  const [accounts, setAccounts] = useState([1]);
   const nav_tabs = [
     { name: "Accounts", location: "accounts" },
     { name: "Statement", location: "statement" },
@@ -52,14 +55,7 @@ const Accounts = (props: Props) => {
 
   return (
     <View style={tw`h-full bg-white relative items-center justify-center`}>
-      <View
-        style={[
-          tw`absolute bottom-25 right-3 p-4 rounded-full z-50`,
-          { backgroundColor: Colors.dark.background },
-        ]}
-      >
-        <AntDesign name="plus" size={24} color="white" />
-      </View>
+      <FloatingTransactionButton />
       {/* {accounts.length >= 1 ? ( */}
       <View
         style={[
@@ -115,14 +111,16 @@ const Accounts = (props: Props) => {
           />
         </View>
 
-        <TouchableOpacity
+        <Pressable
           style={[
-            tw` w-full p-3 rounded-full`,
+            tw` w-full rounded-full`,
             { backgroundColor: Colors.dark.background },
           ]}
         >
-          <Text style={tw`text-white text-center`}>Add Card</Text>
-        </TouchableOpacity>
+          <Link href={"/add-account"} asChild>
+            <Text style={tw`text-white text-center p-3 `}>Add Card</Text>
+          </Link>
+        </Pressable>
       </View>
       <View
         style={tw`bg-zinc-50 border-t border-zinc-200/50 flex-1 w-full z-0 p-4`}
@@ -158,4 +156,30 @@ const Accounts = (props: Props) => {
 
 export default Accounts;
 
-const styles = StyleSheet.create({});
+const styles = StyleSheet.create({
+  modalView: {
+    margin: 20,
+    backgroundColor: "white",
+    borderRadius: 20,
+    padding: 35,
+    alignItems: "center",
+    shadowColor: "#000",
+    shadowOffset: {
+      width: 0,
+      height: 2,
+    },
+    shadowOpacity: 0.25,
+    shadowRadius: 4,
+    elevation: 5,
+  },
+  centeredView: {
+    flex: 1,
+    justifyContent: "center",
+    alignItems: "center",
+    marginTop: 22,
+  },
+  modalText: {
+    marginBottom: 15,
+    textAlign: "center",
+  },
+});

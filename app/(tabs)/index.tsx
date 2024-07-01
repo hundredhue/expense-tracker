@@ -6,6 +6,7 @@ import CashFlowItem from "@/components/CashFlowItem/CashFlowItem";
 import CreditCard from "@/assets/icons/CreditCard";
 import tw from "twrnc";
 import GoalReachedComponent from "@/components/goal-reached-component/GoalReachedComponent";
+import FloatingTransactionButton from "@/components/buttons/FloatingTransactionButton";
 
 export default function TabOneScreen() {
   const insets = useSafeAreaInsets();
@@ -27,7 +28,8 @@ export default function TabOneScreen() {
   ];
 
   return (
-    <View style={[tw`h-full gap-6`]}>
+    <View style={[tw`h-full gap-6 bg-zinc-50 relative`]}>
+      <FloatingTransactionButton />
       <View
         style={[
           tw`min-h-[20%] bg-[#363946] items-center`,
@@ -59,7 +61,7 @@ export default function TabOneScreen() {
         >
           <View style={tw`w-full`}>
             <View
-              style={tw`bg-[#D9D9D9] top-0 absolute  items-end p-4 right-0 h-32 w-40 rounded-bl-full `}
+              style={tw`bg-[#D9D9D9] top-0 absolute items-end p-4 right-0 h-32 w-40 rounded-bl-full `}
             >
               <View style={tw`h-12 w-12 `}>
                 <CreditCard />

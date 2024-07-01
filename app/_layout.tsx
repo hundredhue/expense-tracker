@@ -11,6 +11,7 @@ import { useEffect } from "react";
 import "react-native-reanimated";
 
 import { useColorScheme } from "@/components/useColorScheme";
+import ModalHeader from "@/components/navigation/ModalHeader";
 
 export {
   // Catch any errors thrown by the Layout component.
@@ -57,7 +58,24 @@ function RootLayoutNav() {
       <Stack>
         <Stack.Screen name="(onboarding)" options={{ headerShown: false }} />
         <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
-        <Stack.Screen name="modal" options={{ presentation: "modal" }} />
+        <Stack.Screen
+          name="add-account"
+          options={{
+            presentation: "modal",
+            header: ({ navigation }) => (
+              <ModalHeader navigation={navigation} title="Add Account" />
+            ),
+          }}
+        />
+        <Stack.Screen
+          name="transaction-modal"
+          options={{
+            presentation: "modal",
+            header: ({ navigation }) => (
+              <ModalHeader navigation={navigation} title="Add Transaction" />
+            ),
+          }}
+        />
       </Stack>
     </ThemeProvider>
   );
