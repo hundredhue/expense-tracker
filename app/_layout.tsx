@@ -15,6 +15,7 @@ import ModalHeader from "@/components/navigation/ModalHeader";
 import { getDatabase, loadDatabase } from "@/config/database";
 import { SQLiteProvider } from "expo-sqlite/next";
 import { dbName } from "@/utils/db_variables";
+import { TransactionsProvider } from "@/context/TransactionContext";
 
 export {
   // Catch any errors thrown by the Layout component.
@@ -70,30 +71,40 @@ function RootLayoutNav() {
 
   return (
     <SQLiteProvider databaseName={dbName}>
-      <ThemeProvider value={colorScheme === "light" ? DarkTheme : DefaultTheme}>
-        <Stack>
-          <Stack.Screen name="(onboarding)" options={{ headerShown: false }} />
-          <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
-          <Stack.Screen
-            name="add-account"
-            options={{
-              presentation: "modal",
-              header: ({ navigation }) => (
-                <ModalHeader navigation={navigation} title="Add Account" />
-              ),
-            }}
-          />
-          <Stack.Screen
-            name="transaction-modal"
-            options={{
-              presentation: "modal",
-              header: ({ navigation }) => (
-                <ModalHeader navigation={navigation} title="Add Transaction" />
-              ),
-            }}
-          />
-        </Stack>
-      </ThemeProvider>
+      <TransactionsProvider>
+        <ThemeProvider
+          value={colorScheme === "light" ? DarkTheme : DefaultTheme}
+        >
+          <Stack>
+            <Stack.Screen
+              name="(onboarding)"
+              options={{ headerShown: false }}
+            />
+            <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
+            <Stack.Screen
+              name="add-account"
+              options={{
+                presentation: "modal",
+                header: ({ navigation }) => (
+                  <ModalHeader navigation={navigation} title="Add Account" />
+                ),
+              }}
+            />
+            <Stack.Screen
+              name="transaction-modal"
+              options={{
+                presentation: "modal",
+                header: ({ navigation }) => (
+                  <ModalHeader
+                    navigation={navigation}
+                    title="Add Transaction"
+                  />
+                ),
+              }}
+            />
+          </Stack>
+        </ThemeProvider>
+      </TransactionsProvider>
     </SQLiteProvider>
   );
 }
