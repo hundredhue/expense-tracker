@@ -13,6 +13,7 @@ export interface Transaction {
   date: number;
   description: string;
   type: "Expense" | "Income";
+  card_id: number;
 }
 
 export interface Category {

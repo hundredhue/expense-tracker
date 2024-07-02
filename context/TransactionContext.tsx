@@ -12,6 +12,7 @@ type TransactionsContextType = {
   totalExpenses: number;
   totalIncome: number;
   getData: () => void;
+  addTransaction: (transaction: Transaction) => void;
 };
 
 const TransactionsContext = createContext<TransactionsContextType | undefined>(
@@ -33,6 +34,29 @@ export const TransactionsProvider: React.FC<{ children: React.ReactNode }> = ({
   const [totalIncome, setTotalIncome] = useState(0);
 
   const db = useSQLiteContext();
+
+  const addTransaction = async (transaction: Transaction) => {
+    try {
+      // Example implementation assuming you have a table 'Transactions'
+      await db.runAsync(
+        `INSERT INTO Transactions (id, category_id, amount, date, description, type, card_id) VALUES (?, ?, ?, ?, ?, ?, ?)`,
+        [
+          transaction.id,
+          transaction.category_id,
+          transaction.amount,
+          transaction.date,
+          transaction.description,
+          transaction.type,
+          transaction.card_id,
+        ]
+      );
+      console.log("Transaction added successfully");
+      // After adding, update local state or fetch data again
+      getData();
+    } catch (error) {
+      console.error("Error adding transaction: ", error);
+    }
+  };
 
   const getData = async () => {
     try {
@@ -103,6 +127,7 @@ export const TransactionsProvider: React.FC<{ children: React.ReactNode }> = ({
         totalExpenses,
         totalIncome,
         getData,
+        addTransaction,
       }}
     >
       {children}
