@@ -35,12 +35,11 @@ const Accounts = (props: Props) => {
     { name: "Statement", location: "statement" },
   ];
 
-  const cardColors = [
-    { color: "bg-[#363946]", amountBgColor: "bg-blue-900" },
-    { color: "bg-zinc-950", amountBgColor: "bg-zinc-700" },
-    { color: "bg-blue-900", amountBgColor: "bg-yellow-900" },
-    { color: "bg-red-900", amountBgColor: "bg-red-900" },
-  ];
+  // Function to generate background color based on index
+  const getBackgroundColor = (index: number) => {
+    const colors = ["bg-[#363946]", "bg-zinc-950", "bg-blue-900", "bg-red-900"]; // Example colors
+    return colors[index % colors.length]; // Cycle through colors based on index
+  };
 
   return (
     <View style={tw`h-full bg-white relative items-center justify-center`}>
@@ -83,19 +82,22 @@ const Accounts = (props: Props) => {
 
         <View>
           <FlatList
-            data={cardColors} // Use cardColors as data
+            data={cards} // Use cards data from context
             horizontal
             showsHorizontalScrollIndicator={false}
             pagingEnabled
             snapToAlignment="center"
             decelerationRate="fast"
-            keyExtractor={(item, index) => index.toString()}
-            renderItem={({ item }) => (
+            keyExtractor={(item) => item.id.toString()} // Ensure each card has a unique id
+            renderItem={({ item, index }) => (
               <CreditCard
-                color={item.color}
-                amountBgColor={item.amountBgColor}
+                color={getBackgroundColor(index)} // Dynamically set background color based on index
+                name={item.name} // Example name, modify based on item data
+                cardNumber={item.number} // Example number, modify based on item data
+                amount={item.amount} // Example amount, modify based on item data
+                id={item.id} // Example id, modify based on item data
               />
-            )} // Pass color prop
+            )}
             contentContainerStyle={tw`gap-4`}
           />
         </View>

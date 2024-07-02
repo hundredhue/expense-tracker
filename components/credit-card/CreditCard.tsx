@@ -5,12 +5,18 @@ import tw from "twrnc";
 
 interface Props {
   color: string;
-  amountBgColor: string;
+  name: string;
+  amount: number;
+  cardNumber: string | number;
+  id: string | number;
 }
 
-const CreditCard = ({ color, amountBgColor }: Props) => {
-  const cardNumber = "**** **** **** 5432";
-  const amount = "$123.45";
+const CreditCard = ({ color, cardNumber, amount }: Props) => {
+  // Function to format credit card number
+  const formatCardNumber = (number: any) => {
+    // Assuming number is in format "1234123412345432"
+    return "**** **** **** " + number.slice(-4); // Format as "**** **** **** 5432"
+  };
 
   return (
     <View style={styles.container}>
@@ -25,7 +31,9 @@ const CreditCard = ({ color, amountBgColor }: Props) => {
             </Text>
             <Text style={tw`text-3xl text-zinc-100 font-bold`}>{amount}</Text>
           </View>
-          <Text style={tw`text-zinc-400 font-semibold`}>{cardNumber}</Text>
+          <Text style={tw`text-zinc-400 font-semibold`}>
+            {formatCardNumber(cardNumber)}
+          </Text>
         </View>
       </View>
     </View>
