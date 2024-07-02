@@ -15,7 +15,7 @@ const CashFlowItem = (props: Props) => {
     <View style={tw`flex flex-row items-center gap-2  `}>
       <View style={tw`bg-zinc-100 rounded-full p-2`}>
         <AntDesign
-          name={props.type === "expense" ? "arrowdown" : "arrowup"}
+          name={props.type === "Expense" ? "arrowdown" : "arrowup"}
           size={16}
           color="#3f3f46"
         />
@@ -25,7 +25,7 @@ const CashFlowItem = (props: Props) => {
         <Text style={tw`text-xs text-zinc-400`}>{props.description}</Text>
       </View>
       <View style={tw`flex flex-col flex-1 pr-2`}>
-        {props.type === "expense" ? (
+        {props.type === "Expense" ? (
           <Text style={tw`font-bold text-red-600 text-right`}>
             - ${props.amount}
           </Text>

@@ -32,7 +32,10 @@
     "react-native-svg": "15.2.0",
     "react-native-svg-circular-progress": "^1.0.4",
     "react-native-web": "~0.19.10",
-    "twrnc": "^4.3.0"
+    "twrnc": "^4.3.0",
+    "expo-file-system": "~17.0.1",
+    "expo-sqlite": "~14.0.4",
+    "expo-asset": "~10.0.10"
   },
   "devDependencies": {
     "@babel/core": "^7.20.0",
