@@ -104,18 +104,6 @@ function RootLayoutNav() {
                   ),
                 }}
               />
-              <Stack.Screen
-                name="card-modal"
-                options={{
-                  presentation: "modal",
-                  header: ({ navigation }) => (
-                    <ModalHeader
-                      navigation={navigation}
-                      title="Edit Card Info"
-                    />
-                  ),
-                }}
-              />
             </Stack>
           </ThemeProvider>
         </TransactionsProvider>
