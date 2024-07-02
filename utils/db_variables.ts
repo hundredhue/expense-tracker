@@ -1,1 +1,1 @@
-export const dbName = "savvyJarDB.db";
+export const dbName = "savvyDB.db";

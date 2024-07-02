@@ -9,6 +9,7 @@ type CardContextType = {
   getAllCards: () => Promise<Cards[]>;
   addCard: (name: string, amount: number, number: string, type: string) => void;
   removeCard: (id: number) => void;
+  updateCard: (id: number, newData: Partial<Cards>) => void;
 };
 
 const CardContext = createContext<CardContextType | undefined>(undefined);
@@ -65,6 +66,49 @@ export const CardProvider: React.FC<{ children: React.ReactNode }> = ({
     }
   };
 
+  const updateCard = async (id: number, newData: Partial<Cards>) => {
+    try {
+      const currentCard = cards.find((card) => card.id === id);
+      if (!currentCard) {
+        throw new Error(`Card with id ${id} not found.`);
+      }
+
+      const { name, amount, number, type } = newData;
+      const updatedFields: any = {};
+
+      // Update fields that are provided in newData
+      if (name !== undefined) updatedFields.name = name;
+      if (amount !== undefined) updatedFields.amount = amount;
+      if (number !== undefined) updatedFields.number = number;
+      if (type !== undefined) updatedFields.type = type;
+
+      // Only run update if there are fields to update
+      if (Object.keys(updatedFields).length > 0) {
+        const fieldsToUpdate = Object.keys(updatedFields);
+        const valuesToUpdate = fieldsToUpdate.map(
+          (field) => updatedFields[field]
+        );
+
+        const updateQuery = `UPDATE Cards SET ${fieldsToUpdate
+          .map((field) => `${field} = ?`)
+          .join(", ")} WHERE id = ?`;
+
+        await db.runAsync(updateQuery, [...valuesToUpdate, id]);
+
+        // Update local state to reflect the updated card
+        const updatedCards = cards.map((card) =>
+          card.id === id ? { ...card, ...updatedFields } : card
+        );
+        setCards(updatedCards);
+        console.log("Card updated successfully");
+      } else {
+        console.log("No fields to update provided.");
+      }
+    } catch (error) {
+      console.error("Error updating card: ", error);
+    }
+  };
+
   useEffect(() => {
     getAllCards(); // Fetch cards on component mount
   }, []);
@@ -76,6 +120,7 @@ export const CardProvider: React.FC<{ children: React.ReactNode }> = ({
         getAllCards,
         addCard,
         removeCard,
+        updateCard,
       }}
     >
       {children}

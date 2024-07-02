@@ -1,3 +1,9 @@
+import { useTransactionsContext } from "@/context/TransactionContext";
+import PrimaryButton from "@/components/buttons/PrimaryButton";
+import { useCardContext } from "@/context/CardContext";
+import { Cards, Category } from "@/utils/types";
+import { AntDesign } from "@expo/vector-icons";
+import React, { useState } from "react";
 import {
   KeyboardAvoidingView,
   Pressable,
@@ -8,14 +14,8 @@ import {
   Platform,
   SafeAreaView,
 } from "react-native";
-import React, { useState } from "react";
 import tw from "twrnc";
-import PrimaryButton from "@/components/buttons/PrimaryButton";
 import { data } from "@/utils/data";
-import { useCardContext } from "@/context/CardContext";
-import { useTransactionsContext } from "@/context/TransactionContext";
-import { Cards, Category } from "@/utils/types";
-import { AntDesign } from "@expo/vector-icons";
 
 type Props = {};
 
@@ -24,7 +24,7 @@ const TransactionModal = (props: Props) => {
     data.transaction_types[0]
   );
   const { cards } = useCardContext();
-  const { categories } = useTransactionsContext();
+  const { categories, addTransaction } = useTransactionsContext();
   const [selected_category, setSelectedCategory] = useState<Category | null>(
     null
   );
@@ -43,19 +43,19 @@ const TransactionModal = (props: Props) => {
 
     // Prepare transaction object
     const newTransaction = {
-      id: Math.random(), // Replace with actual unique ID generation
-      category_id: selected_option._id, // Assuming selected_option has _id
+      category_id: selected_category?.id, // Assuming selected_option has _id
       amount: parseFloat(amount),
       date: Date.now(), // Use appropriate date format as per your requirements
       description,
-      type: selected_option.name,
+      type: selected_option._id,
       card_id: selected_card.id,
     };
 
-    // Call addTransaction function from context
-    // Assuming you have an addTransaction function in TransactionContext
-    // addTransaction(newTransaction);
-    console.log("New transaction:", newTransaction);
+    // @ts-ignore
+    addTransaction(newTransaction);
+    setTransactionName("");
+    setDescription("");
+    setAmount("");
   };
 
   const addNewCard = () => {

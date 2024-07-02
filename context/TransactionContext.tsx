@@ -1,8 +1,7 @@
-// TransactionsContext.tsx
-
 import React, { createContext, useContext, useEffect, useState } from "react";
 import { Category, Transaction, TransactionsByMonth } from "@/utils/types";
 import { useSQLiteContext } from "expo-sqlite/next";
+import { useCardContext } from "./CardContext";
 
 type TransactionsContextType = {
   categories: Category[];
@@ -13,6 +12,7 @@ type TransactionsContextType = {
   totalIncome: number;
   getData: () => void;
   addTransaction: (transaction: Transaction) => void;
+  removeTransaction: (id: number) => void;
 };
 
 const TransactionsContext = createContext<TransactionsContextType | undefined>(
@@ -33,15 +33,74 @@ export const TransactionsProvider: React.FC<{ children: React.ReactNode }> = ({
   const [totalExpenses, setTotalExpenses] = useState(0);
   const [totalIncome, setTotalIncome] = useState(0);
 
+  const { cards, updateCard } = useCardContext();
+
   const db = useSQLiteContext();
+
+  const removeTransaction = async (id: number) => {
+    try {
+      // Find the transaction to be removed
+      const transactionToRemove = transactions.find(
+        (transaction) => transaction.id === id
+      );
+      if (!transactionToRemove) {
+        throw new Error(`Transaction with id ${id} not found.`);
+      }
+
+      // Delete the transaction from the database
+      await db.runAsync(`DELETE FROM Transactions WHERE id = ?`, [id]);
+
+      // Update local transactions state
+      const updatedTransactions = transactions.filter(
+        (transaction) => transaction.id !== id
+      );
+      setTransactions(updatedTransactions);
+
+      // Calculate the new total amount for the associated card
+      const cardId = transactionToRemove.card_id;
+      const remainingTransactions = updatedTransactions.filter(
+        (transaction) => transaction.card_id === cardId
+      );
+      const newCardAmount = remainingTransactions.reduce(
+        (total, transaction) =>
+          transaction.type === "Income"
+            ? total + transaction.amount
+            : total - transaction.amount,
+        0
+      );
+
+      // Update the card's amount in the database and local state
+      await updateCard(cardId, { amount: newCardAmount });
+
+      console.log("Transaction removed successfully");
+      getData(); // Refresh data after removing transaction
+    } catch (error) {
+      console.error("Error removing transaction: ", error);
+    }
+  };
 
   const addTransaction = async (transaction: Transaction) => {
     try {
-      // Example implementation assuming you have a table 'Transactions'
+      // Calculate the new card amount based on transaction type
+      const currentCard = cards.find((card) => card.id === transaction.card_id);
+      if (!currentCard) {
+        throw new Error(`Card with id ${transaction.card_id} not found.`);
+      }
+
+      let newCardAmount = currentCard.amount;
+      if (transaction.type === "Income") {
+        newCardAmount += transaction.amount;
+      } else if (transaction.type === "Expense") {
+        newCardAmount -= transaction.amount;
+      }
+
+      // Update the card's amount
+      await updateCard(transaction.card_id, { amount: newCardAmount });
+
+      // Insert the transaction into the database
       await db.runAsync(
-        `INSERT INTO Transactions (id, category_id, amount, date, description, type, card_id) VALUES (?, ?, ?, ?, ?, ?, ?)`,
+        `INSERT INTO Transactions (category_id, amount, date, description, type, card_id) VALUES (?, ?, ?, ?, ?, ?)`,
         [
-          transaction.id,
           transaction.category_id,
           transaction.amount,
           transaction.date,
@@ -50,6 +109,7 @@ export const TransactionsProvider: React.FC<{ children: React.ReactNode }> = ({
           transaction.card_id,
         ]
       );
+
       console.log("Transaction added successfully");
       // After adding, update local state or fetch data again
       getData();
@@ -128,6 +188,7 @@ export const TransactionsProvider: React.FC<{ children: React.ReactNode }> = ({
         totalIncome,
         getData,
         addTransaction,
+        removeTransaction,
       }}
     >
       {children}

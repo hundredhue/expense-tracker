@@ -1,5 +1,5 @@
 -- 1. create DB
-sqlite3 savvyJarDB.db
+sqlite3 savvyDB.db
 
 -- 2. create tables
 CREATE TABLE IF NOT EXISTS Categories (
@@ -29,7 +29,7 @@ CREATE TABLE IF NOT EXISTS Transactions (
  );
 
 -- insert cards 
-INSERT INTO Cards (name, amount, number, type) VALUES ('chikwana', 400, '4444 1211 1242 2311', 'cash');
+INSERT INTO Cards (name, amount, number, type) VALUES ('Default', 0, '1234 1234 1234 1234', 'cash');
 
 -- 3. insert data
 INSERT INTO Categories (name, type) VALUES ('Utilities', 'Expense');

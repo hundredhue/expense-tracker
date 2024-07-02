@@ -25,6 +25,7 @@ const TransactionsList = (props: Props) => {
       )}
       {transactions.map((item, index) => (
         <CashFlowItem
+          id={item.id}
           key={index}
           name={findFromArray(categories, item.category_id)?.name}
           description={item.description}

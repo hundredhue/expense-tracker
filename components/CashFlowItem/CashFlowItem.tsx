@@ -1,18 +1,30 @@
-import { StyleSheet, Text, View } from "react-native";
+import { StyleSheet, Text, TouchableOpacity, View } from "react-native";
 import React from "react";
 import { AntDesign } from "@expo/vector-icons";
 import tw from "twrnc";
+import { useTransactionsContext } from "@/context/TransactionContext";
 
 type Props = {
   name: string;
   type: string;
   description: string;
   amount: number;
+  id: any;
 };
 
 const CashFlowItem = (props: Props) => {
+  const { transactions, removeTransaction } = useTransactionsContext();
+
+  const handleRemoveTransaction = (id: number) => {
+    removeTransaction(id);
+  };
+
   return (
-    <View style={tw`flex flex-row items-center gap-2  `}>
+    <TouchableOpacity
+      onLongPress={() => handleRemoveTransaction(props.id)}
+      activeOpacity={0.7}
+      style={tw`flex flex-row items-center gap-2  `}
+    >
       <View style={tw`bg-zinc-100 rounded-full p-2`}>
         <AntDesign
           name={props.type === "Expense" ? "arrowdown" : "arrowup"}
@@ -35,7 +47,7 @@ const CashFlowItem = (props: Props) => {
           </Text>
         )}
       </View>
-    </View>
+    </TouchableOpacity>
   );
 };
 

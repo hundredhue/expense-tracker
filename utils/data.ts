@@ -5,8 +5,8 @@ export const data = {
     { name: "Wallet", _id: "wallet" },
   ],
   transaction_types: [
-    { name: "Expense", _id: "expense" },
-    { name: "Income", _id: "income" },
+    { name: "Expense", _id: "Expense" },
+    { name: "Income", _id: "Income" },
   ],
   cash_flow: [
     {
