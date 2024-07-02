@@ -3,7 +3,7 @@ export interface Cards {
   name: string;
   amount: number;
   type: "cash" | "bank" | "wallet";
-  number: "string";
+  number: any;
 }
 
 export interface Transaction {

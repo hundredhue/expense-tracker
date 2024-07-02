@@ -13,6 +13,16 @@ const TransactionsList = (props: Props) => {
     <View
       style={tw`bg-white flex-1 p-2 gap-4 rounded-3xl border border-zinc-200/50 mb-20`}
     >
+      {transactions?.length < 1 && (
+        <View>
+          <Text style={tw`text-center text-lg font-bold text-zinc-950`}>
+            No transactions yet
+          </Text>
+          <Text style={tw`text-center text-sm font-medium text-zinc-400`}>
+            Start transacting to see yur history
+          </Text>
+        </View>
+      )}
       {transactions.map((item, index) => (
         <CashFlowItem
           key={index}

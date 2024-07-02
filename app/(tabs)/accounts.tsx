@@ -22,9 +22,7 @@ type Props = {};
 const Accounts = (props: Props) => {
   const insets = useSafeAreaInsets();
 
-  const { cards } = useCardContext();
-
-  console.log("all cards", cards);
+  const { cards, removeCard } = useCardContext();
 
   const [selected_option, setSelectedOption] = useState({
     name: "Accounts",
@@ -44,7 +42,6 @@ const Accounts = (props: Props) => {
   return (
     <View style={tw`h-full bg-white relative items-center justify-center`}>
       <FloatingTransactionButton />
-      {/* {accounts.length >= 1 ? ( */}
       <View
         style={[
           tw`gap-8 w-full px-4 py-8`,
@@ -80,6 +77,17 @@ const Accounts = (props: Props) => {
           {/* Cards */}
         </View>
 
+        {cards?.length < 1 && (
+          <View>
+            <Text style={tw`text-center text-lg font-bold text-zinc-950`}>
+              No cards found
+            </Text>
+            <Text style={tw`text-center text-sm font-medium text-zinc-400`}>
+              Click below to add a card and start saving
+            </Text>
+          </View>
+        )}
+
         <View>
           <FlatList
             data={cards} // Use cards data from context
@@ -96,6 +104,7 @@ const Accounts = (props: Props) => {
                 cardNumber={item.number} // Example number, modify based on item data
                 amount={item.amount} // Example amount, modify based on item data
                 id={item.id} // Example id, modify based on item data
+                removeCard={removeCard}
               />
             )}
             contentContainerStyle={tw`gap-4`}
@@ -118,16 +127,6 @@ const Accounts = (props: Props) => {
       >
         <TransactionsList />
       </ScrollView>
-      {/* ) : (
-        <>
-          <Text style={tw`text-zinc-950 text-2xl font-bold`}>
-            No accounts available
-          </Text>
-          <Text style={tw`text-zinc-400 font-medium`}>
-            Add an account to display it here
-          </Text>
-        </>
-      )} */}
     </View>
   );
 };

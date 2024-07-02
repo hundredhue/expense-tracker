@@ -1,6 +1,6 @@
 import CardBackground from "@/assets/images/CardBackground";
 import React from "react";
-import { StyleSheet, View, Text } from "react-native";
+import { StyleSheet, View, Text, TouchableOpacity } from "react-native";
 import tw from "twrnc";
 
 interface Props {
@@ -9,9 +9,10 @@ interface Props {
   amount: number;
   cardNumber: string | number;
   id: string | number;
+  removeCard?: any;
 }
 
-const CreditCard = ({ color, cardNumber, amount }: Props) => {
+const CreditCard = ({ color, cardNumber, amount, removeCard, id }: Props) => {
   // Function to format credit card number
   const formatCardNumber = (number: any) => {
     // Assuming number is in format "1234123412345432"
@@ -19,7 +20,11 @@ const CreditCard = ({ color, cardNumber, amount }: Props) => {
   };
 
   return (
-    <View style={styles.container}>
+    <TouchableOpacity
+      activeOpacity={0.7}
+      onLongPress={() => removeCard(id)}
+      style={styles.container}
+    >
       <View style={[tw`${color} p-10`, styles.card]}>
         <View style={styles.background}>
           <CardBackground />
@@ -36,7 +41,7 @@ const CreditCard = ({ color, cardNumber, amount }: Props) => {
           </Text>
         </View>
       </View>
-    </View>
+    </TouchableOpacity>
   );
 };
 

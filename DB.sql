@@ -1,5 +1,5 @@
 -- 1. create DB
-sqlite3 expenseTrackerDB.db
+sqlite3 savvyJarDB.db
 
 -- 2. create tables
 CREATE TABLE IF NOT EXISTS Categories (
@@ -25,7 +25,7 @@ CREATE TABLE IF NOT EXISTS Transactions (
   description TEXT,
   type TEXT NOT NULL CHECK (type IN ('Expense', 'Income')),
   FOREIGN KEY (category_id) REFERENCES Categories (id)
-  FOREIGN KEY (card_id) REFERENCES Cards (id)
+  FOREIGN KEY (card_id) REFERENCES Cards (id) ON DELETE CASCADE
  );
 
 -- insert cards 

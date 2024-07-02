@@ -1,15 +1,22 @@
 import { StyleSheet, Text, View } from "react-native";
 import React from "react";
 import tw from "twrnc";
-import { useTransactionsContext } from "@/context/TransactionContext";
 import CreditCard from "@/assets/icons/CreditCard";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
+import { useCardContext } from "@/context/CardContext";
 
 type Props = {};
 
 const MobileHeroSection = (props: Props) => {
-  const { totalIncome } = useTransactionsContext();
   const insets = useSafeAreaInsets();
+
+  const { cards } = useCardContext();
+
+  // Calculate total amount in all cards
+  const totalAmountInAllCards = cards.reduce(
+    (total, card) => total + card.amount,
+    0
+  );
 
   return (
     <View
@@ -55,7 +62,7 @@ const MobileHeroSection = (props: Props) => {
               <Text style={tw`text-left  text-sm text-white`}>Balance</Text>
             </View>
             <Text style={tw`text-3xl text-white font-semibold`}>
-              ${totalIncome.toFixed(2)}
+              ${totalAmountInAllCards.toFixed(2)}
             </Text>
           </View>
         </View>
