@@ -1,6 +1,16 @@
 -- 1. create DB
 sqlite3 savvyDB.db
 
+CREATE TABLE IF NOT EXISTS Limits (
+  id INTEGER PRIMARY KEY AUTOINCREMENT,
+  monthly_limit REAL NOT NULL,
+  weekly_limit REAL NOT NULL,
+  daily_limit REAL NOT NULL
+);
+
+-- 2. Initialize default limits
+INSERT INTO Limits (monthly_limit, weekly_limit, daily_limit) VALUES (0, 0, 0);
+
 -- 2. create tables
 CREATE TABLE IF NOT EXISTS Categories (
   id INTEGER PRIMARY KEY AUTOINCREMENT,

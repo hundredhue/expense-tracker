@@ -2,7 +2,7 @@ import * as FileSystem from "expo-file-system";
 import { Asset } from "expo-asset";
 import * as SQLite from "expo-sqlite";
 
-const database_name = "savvyDB.db";
+const database_name = "DB.db";
 
 export const loadDatabase = async () => {
   const dbAsset = require(`@/assets/${database_name}`);

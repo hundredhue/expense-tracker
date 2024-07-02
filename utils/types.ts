@@ -26,3 +26,20 @@ export interface TransactionsByMonth {
   totalExpenses: number;
   totalIncome: number;
 }
+
+// Assuming your types might look something like this:
+export type DailyLimit = {
+  amount: number;
+  date: Date; // Date for which the limit is set
+};
+
+export type WeeklyLimit = {
+  amount: number;
+  startDate: Date; // Start date of the week
+};
+
+export type MonthlyLimit = {
+  amount: number;
+  month: number; // Month for which the limit is set (0 for January, 11 for December)
+  year: number; // Year for which the limit is set
+};

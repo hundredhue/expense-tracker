@@ -8,8 +8,12 @@ const STROKE_WIDTH = 5; // Adjust stroke width for better visibility
 const RADIUS = (SIZE - STROKE_WIDTH) / 2;
 const CIRCUMFERENCE = 2 * Math.PI * RADIUS;
 
-export default function CircularProgressBar() {
-  const [progress, setProgress] = useState(80);
+interface Props {
+  progress: number;
+}
+
+export default function CircularProgressBar({ progress }: Props) {
+  const [_, setProgress] = useState(80);
 
   useEffect(() => {
     if (progress === 100) {
@@ -26,13 +30,13 @@ export default function CircularProgressBar() {
     );
   };
 
-  const getColor = () => {
+  const getColor = (progress: number) => {
     if (progress < 50) {
-      return "#dc2626";
-    } else if (progress < 80) {
-      return "#fde047";
+      return "#16a34a"; // Green if progress is below 50
+    } else if (progress >= 50 && progress <= 80) {
+      return "#fde047"; // Yellow if progress is between 50 and 80 (inclusive)
     } else {
-      return "#16a34a";
+      return "#dc2626"; // Red if progress is above 80
     }
   };
 
@@ -54,7 +58,7 @@ export default function CircularProgressBar() {
             cx={SIZE / 2}
             cy={SIZE / 2}
             r={RADIUS}
-            stroke={getColor()}
+            stroke={getColor(progress)}
             strokeWidth={STROKE_WIDTH}
             fill="none"
             strokeDasharray={CIRCUMFERENCE}

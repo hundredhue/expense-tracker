@@ -1,13 +1,39 @@
-import { Image, StyleSheet, Text, TextInput, View } from "react-native";
-import React from "react";
+import React, { useState } from "react";
+import { Image, Text, TextInput, View, Alert } from "react-native";
 import tw from "twrnc";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import PrimaryButton from "@/components/buttons/PrimaryButton";
+import { useLimitsContext } from "@/context/LimitsContext";
 
 type Props = {};
 
 const Overview = (props: Props) => {
   const insets = useSafeAreaInsets();
+  const { setLimits } = useLimitsContext();
+
+  // State variables for input fields
+  const [monthlyInput, setMonthlyInput] = useState("");
+
+  const handleSetLimits = () => {
+    // Convert input strings to numbers
+    const monthly = parseFloat(monthlyInput);
+
+    // Validate input
+    if (isNaN(monthly)) {
+      Alert.alert("Error", "Please enter valid numeric values for all limits.");
+      return;
+    }
+
+    // Update limits in context
+    setLimits(monthly);
+
+    // Optionally, clear input fields
+    setMonthlyInput("");
+
+    // Provide feedback to user
+    Alert.alert("Success", "Limits updated successfully.");
+  };
+
   return (
     <View
       style={[
@@ -32,22 +58,16 @@ const Overview = (props: Props) => {
         </Text>
         <TextInput
           style={tw`p-3 border border-zinc-200/50 rounded-xl text-sm`}
-          placeholder="Monhtly limit"
+          placeholder="Monthly limit"
+          value={monthlyInput}
+          onChangeText={setMonthlyInput}
+          keyboardType="numeric"
         />
-        <TextInput
-          style={tw`p-3 border border-zinc-200/50 rounded-xl text-sm`}
-          placeholder="Weekly limit"
-        />
-        <TextInput
-          style={tw`p-3 border border-zinc-200/50 rounded-xl text-sm`}
-          placeholder="Daily limit"
-        />
-        <PrimaryButton text="Set Limits" />
+
+        <PrimaryButton text="Set Limits" onPress={handleSetLimits} />
       </View>
     </View>
   );
 };
 
 export default Overview;
-
-const styles = StyleSheet.create({});

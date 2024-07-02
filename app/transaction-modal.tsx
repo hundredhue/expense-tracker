@@ -45,7 +45,7 @@ const TransactionModal = (props: Props) => {
     const newTransaction = {
       category_id: selected_category?.id, // Assuming selected_option has _id
       amount: parseFloat(amount),
-      date: Date.now(), // Use appropriate date format as per your requirements
+      date: Math.floor(Date.now() / 1000), // Use appropriate date format as per your requirements
       description,
       type: selected_option._id,
       card_id: selected_card.id,

@@ -13,6 +13,7 @@ type TransactionsContextType = {
   getData: () => void;
   addTransaction: (transaction: Transaction) => void;
   removeTransaction: (id: number) => void;
+  monthlyExpenses: number;
 };
 
 const TransactionsContext = createContext<TransactionsContextType | undefined>(
@@ -32,6 +33,7 @@ export const TransactionsProvider: React.FC<{ children: React.ReactNode }> = ({
   const [totalAmount, setTotalAmount] = useState(0);
   const [totalExpenses, setTotalExpenses] = useState(0);
   const [totalIncome, setTotalIncome] = useState(0);
+  const [monthlyExpenses, setMonthlyExpenses] = useState<any>(0);
 
   const { cards, updateCard } = useCardContext();
 
@@ -142,15 +144,15 @@ export const TransactionsProvider: React.FC<{ children: React.ReactNode }> = ({
 
       const transactionsByMonth = await db.getAllAsync<TransactionsByMonth>(
         `
-        SELECT
-          COALESCE(SUM(CASE WHEN type = 'Expense' THEN amount ELSE 0 END), 0) AS totalExpenses,
-          COALESCE(SUM(CASE WHEN type = 'Income' THEN amount ELSE 0 END), 0) AS totalIncome
-        FROM Transactions
-        WHERE date >= ? AND date <= ?;
-      `,
+      SELECT
+        COALESCE(SUM(CASE WHEN type = 'Expense' THEN amount ELSE 0 END), 0) AS totalExpenses,
+        COALESCE(SUM(CASE WHEN type = 'Income' THEN amount ELSE 0 END), 0) AS totalIncome
+      FROM Transactions
+      WHERE date >= ? AND date <= ?;
+    `,
         [startOfMonthTimestamp, endOfMonthTimestamp]
       );
-      setTransactionsByMonth(transactionsByMonth[0]);
+      setMonthlyExpenses(transactionsByMonth[0]);
 
       const totalAmountResult = await db.getAllAsync<{ totalAmount: number }>(
         `SELECT SUM(amount) AS totalAmount FROM Transactions;`
@@ -189,6 +191,7 @@ export const TransactionsProvider: React.FC<{ children: React.ReactNode }> = ({
         getData,
         addTransaction,
         removeTransaction,
+        monthlyExpenses,
       }}
     >
       {children}

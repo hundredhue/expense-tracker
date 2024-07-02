@@ -17,6 +17,7 @@ import { SQLiteProvider } from "expo-sqlite/next";
 import { dbName } from "@/utils/db_variables";
 import { TransactionsProvider } from "@/context/TransactionContext";
 import { CardProvider } from "@/context/CardContext";
+import { LimitsProvider } from "@/context/LimitsContext";
 
 export {
   // Catch any errors thrown by the Layout component.
@@ -72,42 +73,47 @@ function RootLayoutNav() {
 
   return (
     <SQLiteProvider databaseName={dbName}>
-      <CardProvider>
-        <TransactionsProvider>
-          <ThemeProvider
-            value={colorScheme === "light" ? DarkTheme : DefaultTheme}
-          >
-            <Stack>
-              <Stack.Screen
-                name="(onboarding)"
-                options={{ headerShown: false }}
-              />
-              <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
-              <Stack.Screen
-                name="add-account"
-                options={{
-                  presentation: "modal",
-                  header: ({ navigation }) => (
-                    <ModalHeader navigation={navigation} title="Add Account" />
-                  ),
-                }}
-              />
-              <Stack.Screen
-                name="transaction-modal"
-                options={{
-                  presentation: "modal",
-                  header: ({ navigation }) => (
-                    <ModalHeader
-                      navigation={navigation}
-                      title="Add Transaction"
-                    />
-                  ),
-                }}
-              />
-            </Stack>
-          </ThemeProvider>
-        </TransactionsProvider>
-      </CardProvider>
+      <LimitsProvider>
+        <CardProvider>
+          <TransactionsProvider>
+            <ThemeProvider
+              value={colorScheme === "light" ? DarkTheme : DefaultTheme}
+            >
+              <Stack>
+                <Stack.Screen
+                  name="(onboarding)"
+                  options={{ headerShown: false }}
+                />
+                <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
+                <Stack.Screen
+                  name="add-account"
+                  options={{
+                    presentation: "modal",
+                    header: ({ navigation }) => (
+                      <ModalHeader
+                        navigation={navigation}
+                        title="Add Account"
+                      />
+                    ),
+                  }}
+                />
+                <Stack.Screen
+                  name="transaction-modal"
+                  options={{
+                    presentation: "modal",
+                    header: ({ navigation }) => (
+                      <ModalHeader
+                        navigation={navigation}
+                        title="Add Transaction"
+                      />
+                    ),
+                  }}
+                />
+              </Stack>
+            </ThemeProvider>
+          </TransactionsProvider>
+        </CardProvider>
+      </LimitsProvider>
     </SQLiteProvider>
   );
 }
