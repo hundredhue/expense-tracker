@@ -1,6 +1,5 @@
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import CreditCard from "@/components/credit-card/CreditCard";
-import { AntDesign } from "@expo/vector-icons";
 import {
   StyleSheet,
   Text,
@@ -8,18 +7,24 @@ import {
   View,
   FlatList,
   Pressable,
+  ScrollView,
 } from "react-native";
 import Colors from "@/constants/Colors";
 import React, { useState } from "react";
 import tw from "twrnc";
-import CashFlowItem from "@/components/CashFlowItem/CashFlowItem";
 import { Link } from "expo-router";
 import FloatingTransactionButton from "@/components/buttons/FloatingTransactionButton";
+import TransactionsList from "@/components/transactions-list/TransactionsList";
+import { useCardContext } from "@/context/CardContext";
 
 type Props = {};
 
 const Accounts = (props: Props) => {
   const insets = useSafeAreaInsets();
+
+  const { cards } = useCardContext();
+
+  console.log("all cards", cards);
 
   const [selected_option, setSelectedOption] = useState({
     name: "Accounts",
@@ -35,22 +40,6 @@ const Accounts = (props: Props) => {
     { color: "bg-zinc-950", amountBgColor: "bg-zinc-700" },
     { color: "bg-blue-900", amountBgColor: "bg-yellow-900" },
     { color: "bg-red-900", amountBgColor: "bg-red-900" },
-  ];
-
-  const cash_flow = [
-    {
-      name: "Amazon",
-      description: "shopping",
-      amount: 1672.5,
-      type: "expense",
-    },
-    { name: "Derreck", description: "received", amount: 50.0, type: "income" },
-    {
-      name: "Travelling",
-      description: "chi-hr",
-      amount: 10.0,
-      type: "expense",
-    },
   ];
 
   return (
@@ -122,24 +111,11 @@ const Accounts = (props: Props) => {
           </Link>
         </Pressable>
       </View>
-      <View
-        style={tw`bg-zinc-50 border-t border-zinc-200/50 flex-1 w-full z-0 p-4`}
+      <ScrollView
+        style={tw`bg-zinc-50 border-t border-zinc-200/50 flex-1 w-full z-0 p-4 mb-8`}
       >
-        <View
-          style={tw`bg-white rounded-3xl flex-1 border border-zinc-200/50 p-2`}
-        >
-          {/* Money Item */}
-          {cash_flow.map((item, index) => (
-            <CashFlowItem
-              key={index}
-              name={item.name}
-              description={item.description}
-              amount={item.amount}
-              type={item.type}
-            />
-          ))}
-        </View>
-      </View>
+        <TransactionsList />
+      </ScrollView>
       {/* ) : (
         <>
           <Text style={tw`text-zinc-950 text-2xl font-bold`}>

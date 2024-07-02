@@ -8,4 +8,19 @@ export const data = {
     { name: "Expense", _id: "expense" },
     { name: "Income", _id: "income" },
   ],
+  cash_flow: [
+    {
+      name: "Amazon",
+      description: "shopping",
+      amount: 1672.5,
+      type: "expense",
+    },
+    { name: "Derreck", description: "received", amount: 50.0, type: "income" },
+    {
+      name: "Travelling",
+      description: "chi-hr",
+      amount: 10.0,
+      type: "expense",
+    },
+  ],
 };

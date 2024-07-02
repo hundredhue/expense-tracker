@@ -1,3 +1,5 @@
+// TransactionsContext.tsx
+
 import React, { createContext, useContext, useEffect, useState } from "react";
 import { Category, Transaction, TransactionsByMonth } from "@/utils/types";
 import { useSQLiteContext } from "expo-sqlite/next";
@@ -110,7 +112,7 @@ export const TransactionsProvider: React.FC<{ children: React.ReactNode }> = ({
 
 export const useTransactionsContext = () => {
   const context = useContext(TransactionsContext);
-  if (context === undefined) {
+  if (!context) {
     throw new Error(
       "useTransactionsContext must be used within a TransactionsProvider"
     );

@@ -1,13 +1,29 @@
+import { Pressable, StyleSheet, Text, TextInput, View } from "react-native";
 import PrimaryButton from "@/components/buttons/PrimaryButton";
+import { useCardContext } from "@/context/CardContext";
 import { data } from "@/utils/data";
 import { useState } from "react";
-import { Pressable, StyleSheet, Text, TextInput, View } from "react-native";
 import tw from "twrnc";
 
 export default function ModalScreen() {
   const [selected_option, setSelectedOption] = useState(data.account_types[0]);
+  const { addCard } = useCardContext();
+  const [loading, setLoading] = useState(false);
 
-  const addAccountHandler = () => {};
+  const [name, setName] = useState("");
+  const [amount, setAmount] = useState("");
+  const [number, setNumber] = useState("");
+
+  const addAccountHandler = () => {
+    setLoading(true);
+    if (name && amount && number && selected_option) {
+      addCard(name, parseFloat(amount), number, selected_option._id);
+      setName("");
+      setAmount("");
+      setNumber("");
+    }
+    setLoading(false);
+  };
 
   return (
     <View style={tw`bg-zinc-50 flex-1 p-4 gap-4`}>
@@ -27,19 +43,29 @@ export default function ModalScreen() {
         ))}
       </View>
       <TextInput
+        onChangeText={setName}
         style={tw`bg-white p-3 border border-zinc-200/50 rounded-xl text-lg`}
         placeholder="Enter card name"
+        value={name}
       />
       <TextInput
         style={tw`bg-white p-3 border border-zinc-200/50 rounded-xl text-lg`}
-        placeholder="Enter card number"
+        placeholder="Card number"
+        onChangeText={setNumber}
+        value={number}
       />
       <TextInput
         style={tw`bg-white p-3 border border-zinc-200/50 rounded-xl text-lg`}
-        placeholder="Enter card amount"
+        placeholder="Amount"
         keyboardType="numeric"
+        onChangeText={setAmount}
+        value={amount}
       />
-      <PrimaryButton text={"Add Account"} onPress={addAccountHandler} />
+      <PrimaryButton
+        text={"Add Account"}
+        loading={loading}
+        onPress={addAccountHandler}
+      />
     </View>
   );
 }

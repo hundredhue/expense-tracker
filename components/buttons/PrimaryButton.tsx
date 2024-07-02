@@ -12,9 +12,13 @@ type Props = {
 const PrimaryButton = ({ text, loading, onPress }: Props) => {
   return (
     <TouchableOpacity
+      activeOpacity={0.7}
+      onPress={loading ? () => console.log("loadinig...") : onPress}
       style={[tw`rounded-full `, { backgroundColor: Colors.dark.background }]}
     >
-      <Text style={tw`text-white text-center p-3 `}>{text}</Text>
+      <Text style={tw`text-white text-center p-3 `}>
+        {loading ? "loading..." : text}
+      </Text>
     </TouchableOpacity>
   );
 };
