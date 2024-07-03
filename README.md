@@ -22,7 +22,7 @@
 - <p style="color: red;">Mobile application to mange your expenes and incomes with a modern an minimal UI</p>
 
 <h1 align="center">
-	<img alt="Logo" src="./assets/images/Prototype-Mockup.png" width="200px" />
+	<img alt="Logo" src="./assets/images/Prototype-Mockup.png"/>
   <!-- Application Logo -->
 </h1>
 
