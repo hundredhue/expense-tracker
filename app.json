@@ -1,7 +1,7 @@
 {
   "expo": {
     "name": "Savvy Jar",
-    "slug": "savvy-jar",
+    "slug": "expense-tracker",
     "version": "1.0.0",
     "orientation": "portrait",
     "icon": "./assets/images/icon.png",
@@ -20,7 +20,7 @@
         "foregroundImage": "./assets/images/adaptive-icon.png",
         "backgroundColor": "#ffffff"
       },
-      "package": "com.tatendazw.savvyjar"
+      "package": "com.tatendazw.expensetracker"
     },
     "web": {
       "bundler": "metro",
