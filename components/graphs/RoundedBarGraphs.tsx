@@ -65,6 +65,7 @@ const RoundedBarGraphs = () => {
         style={[
           tw`w-${BAR_WIDTH} rounded-lg`,
           {
+            // @ts-ignore
             height: (item?.adjustedHeight / 100) * screenHeight,
             backgroundColor:
               index === initialScrollIndex ? "#29524A" : item.color,
