@@ -14,6 +14,13 @@ type TransactionsContextType = {
   addTransaction: (transaction: Transaction) => void;
   removeTransaction: (id: number) => void;
   monthlyExpenses: number;
+  monthlyTransactions: {
+    adjustedHeight?: number;
+    id: string;
+    height: number;
+    color: string;
+    month: string;
+  }[];
 };
 
 const TransactionsContext = createContext<TransactionsContextType | undefined>(
@@ -34,6 +41,15 @@ export const TransactionsProvider: React.FC<{ children: React.ReactNode }> = ({
   const [totalExpenses, setTotalExpenses] = useState(0);
   const [totalIncome, setTotalIncome] = useState(0);
   const [monthlyExpenses, setMonthlyExpenses] = useState<any>(0);
+  const [monthlyTransactions, setMonthlyTransactions] = useState<
+    {
+      id: string;
+      height: number;
+      color: string;
+      month: string;
+      adjustedHeight?: number;
+    }[]
+  >([]);
 
   const { cards, updateCard } = useCardContext();
 
@@ -120,6 +136,24 @@ export const TransactionsProvider: React.FC<{ children: React.ReactNode }> = ({
     }
   };
 
+  const getMonthName = (monthNumber: number) => {
+    const date = new Date();
+    date.setMonth(monthNumber - 1);
+    return date.toLocaleString("default", { month: "short" });
+  };
+
+  const formatMonthlyTransactions = (
+    data: { month: string; total: number }[]
+  ) => {
+    const colors = ["#3E6990", "#06070E"];
+    return data.map((item, index) => ({
+      id: (index + 1).toString(),
+      height: item.total,
+      color: colors[index % colors.length],
+      month: getMonthName(parseInt(item.month.split("-")[1])),
+    }));
+  };
+
   const getData = async () => {
     try {
       const result = await db.getAllAsync<Transaction>(
@@ -170,6 +204,20 @@ export const TransactionsProvider: React.FC<{ children: React.ReactNode }> = ({
         `SELECT SUM(amount) AS totalIncome FROM Transactions WHERE type = 'Income';`
       );
       setTotalIncome(totalIncomeResult[0]?.totalIncome || 0);
+
+      const monthlyTransactionsResult = await db.getAllAsync<{
+        month: string;
+        total: number;
+      }>(
+        `SELECT strftime('%Y-%m', datetime(date, 'unixepoch')) as month, 
+                SUM(amount) as total 
+         FROM Transactions 
+         GROUP BY month 
+         ORDER BY month DESC;`
+      );
+      setMonthlyTransactions(
+        formatMonthlyTransactions(monthlyTransactionsResult)
+      );
     } catch (error) {
       console.error("Error fetching data: ", error);
     }
@@ -192,6 +240,7 @@ export const TransactionsProvider: React.FC<{ children: React.ReactNode }> = ({
         addTransaction,
         removeTransaction,
         monthlyExpenses,
+        monthlyTransactions,
       }}
     >
       {children}

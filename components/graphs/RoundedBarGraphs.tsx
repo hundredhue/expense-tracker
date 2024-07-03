@@ -1,44 +1,55 @@
 import { FlatList, StyleSheet, Text, View, Dimensions } from "react-native";
-import React, { useRef, useEffect } from "react";
+import React, { useRef, useEffect, useMemo } from "react";
 import tw from "twrnc";
+import { useTransactionsContext } from "@/context/TransactionContext";
 
 const { width: screenWidth, height: screenHeight } = Dimensions.get("window");
-
-const data = [
-  { id: "1", height: 20, color: "#3E6990", month: "Jan" },
-  { id: "2", height: 40, color: "#06070E", month: "Feb" },
-  { id: "3", height: 44, color: "#3E6990", month: "Mar" },
-  { id: "4", height: 10, color: "#06070E", month: "Apr" },
-  { id: "5", height: 40, color: "#3E6990", month: "May" },
-  { id: "6", height: 60, color: "#06070E", month: "Jun" },
-  { id: "7", height: 40, color: "#3E6990", month: "Jul" },
-  { id: "8", height: 20, color: "#06070E", month: "Aug" },
-  { id: "9", height: 20, color: "#3E6990", month: "Sep" },
-  { id: "10", height: 40, color: "#06070E", month: "Oct" },
-  { id: "11", height: 40, color: "#3E6990", month: "Nov" },
-  { id: "12", height: 40, color: "#06070E", month: "Dec" },
-];
+const BAR_WIDTH = 12; // width for each bar
+const BAR_SPACING = 4; // spacing between bars
+const ITEM_HEIGHT = 10; // assumed height for each item in FlatList
 
 const RoundedBarGraphs = () => {
   const flatListRef = useRef<FlatList | null>(null);
+  const { monthlyTransactions } = useTransactionsContext();
+
+  // Calculate the maximum value among monthlyTransactions
+  const maxTransaction = useMemo(() => {
+    if (monthlyTransactions.length === 0) return 0;
+    return Math.max(...monthlyTransactions.map((item) => item.height));
+  }, [monthlyTransactions]);
+
+  // Adjust each transaction's height as a percentage of the maximum value
+  const adjustedTransactions = useMemo(() => {
+    if (maxTransaction === 0) return monthlyTransactions;
+    return monthlyTransactions.map((item) => ({
+      ...item,
+      adjustedHeight: (item.height / maxTransaction) * 25,
+    }));
+  }, [monthlyTransactions, maxTransaction]);
 
   // Calculate initial scroll index based on the current month (0-indexed)
-  const initialScrollIndex = new Date().getMonth();
+  const initialScrollIndex = useMemo(() => {
+    return Math.min(new Date().getMonth(), adjustedTransactions.length - 1);
+  }, [adjustedTransactions.length]);
 
   useEffect(() => {
-    // Scroll to the middle item on initial render
-    if (flatListRef.current) {
-      flatListRef.current.scrollToIndex({
-        animated: false,
-        index: initialScrollIndex,
-        viewOffset: screenWidth / 2 - 20, // Adjust offset to center the item
-      });
+    // Scroll to the middle item on initial render, if the data is available
+    if (flatListRef.current && adjustedTransactions.length > 0) {
+      try {
+        flatListRef.current.scrollToIndex({
+          animated: false,
+          index: initialScrollIndex,
+          viewOffset: screenWidth / 2 - BAR_WIDTH / 2,
+        });
+      } catch (error) {
+        console.error("scrollToIndex error:", error);
+      }
     }
-  }, []);
+  }, [initialScrollIndex, adjustedTransactions.length]);
 
   const getItemLayout = (data: any, index: number) => ({
-    length: 60, // Assuming each item's height is 60 (adjust as per your actual design)
-    offset: 60 * index,
+    length: ITEM_HEIGHT,
+    offset: ITEM_HEIGHT * index,
     index,
   });
 
@@ -46,18 +57,18 @@ const RoundedBarGraphs = () => {
     item,
     index,
   }: {
-    item: (typeof data)[0];
+    item: (typeof adjustedTransactions)[0];
     index: number;
   }) => (
     <View style={tw`items-center`}>
       <View
         style={[
-          tw`w-10 rounded-lg`,
+          tw`w-${BAR_WIDTH} rounded-lg`,
           {
-            height: (item.height / 300) * screenHeight,
+            height: (item?.adjustedHeight / 100) * screenHeight,
             backgroundColor:
               index === initialScrollIndex ? "#29524A" : item.color,
-          }, // Use different color for current month
+          },
         ]}
       />
       <Text style={tw`mt-2 text-xs font-semibold text-zinc-500`}>
@@ -68,21 +79,20 @@ const RoundedBarGraphs = () => {
 
   return (
     <View style={tw`flex-1 justify-center items-center h-full`}>
-      {/* Ensure parent container has height: '100%' to fill the screen */}
       <FlatList
         ref={(ref) => {
           flatListRef.current = ref;
         }}
         horizontal
-        data={data}
+        data={adjustedTransactions}
         renderItem={renderItem}
         keyExtractor={(item) => item.id}
-        contentContainerStyle={tw` items-end`}
-        ItemSeparatorComponent={() => <View style={tw`w-3`} />}
+        contentContainerStyle={tw`items-end`}
+        ItemSeparatorComponent={() => <View style={{ width: BAR_SPACING }} />}
         showsHorizontalScrollIndicator={false}
-        getItemLayout={getItemLayout} // Provide getItemLayout for proper scrolling
-        style={tw`h-full w-full`} // Ensure FlatList fills the parent container's height and width
-        initialScrollIndex={initialScrollIndex} // Ensure initialScrollIndex is set here
+        getItemLayout={getItemLayout}
+        style={tw`h-full w-full`}
+        initialScrollIndex={initialScrollIndex}
       />
     </View>
   );

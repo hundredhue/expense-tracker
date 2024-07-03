@@ -5,11 +5,13 @@ import RoundedBarGraph from "@/components/graphs/RoundedBarGraphs";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import GoalReachedComponent from "@/components/goal-reached-component/GoalReachedComponent";
 import { Feather, Fontisto, AntDesign } from "@expo/vector-icons";
+import { useTransactionsContext } from "@/context/TransactionContext";
 
 type Props = {};
 
 const Analytics = (props: Props) => {
   const insets = useSafeAreaInsets();
+
   return (
     <View
       style={[
@@ -34,22 +36,22 @@ const Analytics = (props: Props) => {
         <View style={tw`flex-row flex-wrap justify-between`}>
           <OverviewItem
             icon={<Feather name="credit-card" size={24} color="#819595" />}
-            count="12"
+            count="0"
             label="Transactions"
           />
           <OverviewItem
             icon={<Fontisto name="dollar" size={24} color="#819595" />}
-            count="50%"
+            count="0%"
             label="Money Saved"
           />
           <OverviewItem
             icon={<AntDesign name="staro" size={24} color="#819595" />}
-            count="5"
+            count="0"
             label="Active Goals"
           />
           <OverviewItem
             icon={<Feather name="download" size={24} color="#819595" />}
-            count="12"
+            count="0"
             label="Revenue"
           />
         </View>
